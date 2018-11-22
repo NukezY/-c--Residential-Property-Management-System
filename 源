@@ -1,0 +1,1066 @@
+#include <iostream>
+#include <string> 
+#include <fstream> 
+#include <stdlib.h> 
+#include <iomanip> 
+#pragma warning(disable : 4996)
+#pragma warning(disable : C2601)
+using namespace std;
+							//	函数声明
+void Login();				//	登录功能
+void Registered();			//	注册功能
+void menu();				//	系统主界面	
+void Menu_EstManage();		//	系统主界面_楼盘管理
+void Menu_TenManage();		//	系统主界面_住户管理
+void Menu_RepairManage();	//	系统主界面_报修管理
+void Menu_ComplainManage();	//	系统主界面_投诉管理
+void Menu_ChargeManage();	//	系统主界面_收费管理
+void Menu_SeekManage();		//	系统主界面_查询管理
+
+int cheng;//通过cheng变量来控制登录错误在次输入后成功登录
+int l;
+/*多个 goto 执行语句p判断变量
+l=2,跳出当前do-while大循环
+l=1,执行返回上一页
+*/
+							//	Tenants 住户类
+class Tenants{
+private:
+	char Tnum[20];//住户编号
+	char Tname[20];//住户姓名
+	char Tphone[20];//联系电话
+	char Tdress[20];//联系地址
+	char Tcar_num[20];//住户车位编号
+	char Tyf_money[10];//预付金额
+	char Tqf_money[20];//欠费金额
+	char Repair_time[10];//报修时间
+	char Repair_content[20];//报修内容
+	char Repair_state[20];//报修处理状态
+	char Complain_time[10];//投诉时间
+	char Complain_content[20];//投诉内容
+	char Complain_state[20];//投诉处理状态
+
+public:
+	Tenants() {}
+	Tenants(char Tnu[20], char Tna[20], char Tp[10], char Td[10], char Tc[20], char Tyf[20], char Tqf[20], char Retime[20], char Recont[20],char Resta[20],  char Comtime[20], char Comcont[20],char Comsta[20])
+	{
+		strcpy(Tnum, Tnu);
+		strcpy(Tname, Tna);
+		strcpy(Tphone, Tp);
+		strcpy(Tdress, Td);
+		strcpy(Tcar_num, Tc);
+		strcpy(Tyf_money, Tyf);
+		strcpy(Tqf_money, Tqf);
+		strcpy(Repair_time, Retime);
+		strcpy(Repair_content, Recont);
+		strcpy(Repair_state, Resta);
+		strcpy(Complain_time,Comtime);
+		strcpy(Complain_content, Comcont);
+		strcpy(Complain_state, Comsta);
+	}
+	friend void menu();
+};
+							//	Estate   楼盘类继承于住户（包含住户信息）
+class Estate :public Tenants {
+private:
+	char Ename[20];//小区名称
+	char Esum[20];//楼宇总数
+	char Eroom_num[20];//房型编号
+	char Eroom_shape[20];//房型
+	char Eroom_area[20];//建筑面积
+public:
+	Estate() {}
+	Estate(char Ena[20],char Es[20],char Ern[20],char Ers[20],char Era[20])
+	{
+		strcpy(Ename,Ena);
+		strcpy(Esum,Es);
+		strcpy(Eroom_num,Ern);
+		strcpy(Eroom_shape,Ers);
+		strcpy(Eroom_area,Era);
+	}
+};
+
+							//	注册登陆页面
+void MainLogin() {    
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <登录页面>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.登陆系统       *" << endl;
+	cout << "				*       2.注册账号       *" << endl;
+	cout << "				*       3.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-3)  *" << endl;
+	cout << "				**************************" << endl;
+	int k;//指令（1-3）变量
+	char p;//是否继续操作判断变量
+	int flag = 0;//判断	指令（1-3）是否正确 的变量
+	
+	do {					//1-3选项判断（do-while）
+		cin >> k;
+		if (k >= 1&& k <= 3)  
+			flag = 1;
+		else  
+			cout << "				输入有误！请重新输入：" << endl << endl;
+	} while (flag == 0);
+
+	do {		
+		switch (k)
+		{
+					  // 登陆功能
+			case 1 : {
+			Login ();
+			if( cheng == 1) goto loop;
+			break; }
+
+					  //注册功能
+			case 2 : {
+			Registered();
+			break; }   
+
+
+			case 3 : {
+				cout << "				感谢使用小区物业管理系统！" << endl << endl;
+				cout << "				see you next time!        " << endl << endl;
+				exit(0);
+				break; 
+			}
+		}
+
+														//以下为控制循环语句
+		cout << "				你想返回登录页面吗？ y / n : " << endl << "   ";
+		int flag = 0;
+		do {
+			cin >> p;
+			cout << endl;
+			if (p == 'n') {
+				cout << "				感使用小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+			}
+			if (p != 'y'&&p!= 'n')
+				cout << "				指令错误！请重新输入！" << endl;
+			else flag = 1;
+		} while (flag == 0);
+		if (p == 'y') {
+			cout << "				**************************" << endl;
+			cout << "				*欢迎使用小区物业管理系统*" << endl;
+			cout << "				*       <登录页面>       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*       1.登录系统       *" << endl;
+			cout << "				*       2.注册账号       *" << endl;
+			cout << "				*       3.退出系统       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*   请输入你的指令(1-3)  *" << endl;
+			cout << "				**************************" << endl;}
+		cin >> k;
+	}while (p == 'y');
+	loop:{
+		system("cls");
+		cout << "			    登录成功！你已进入小区物业管理系统！" << endl;
+		menu();}
+	
+}//函数后括号
+							//	登录功能
+void Login() {                     //	登陆功能
+	char zhanghao[20], mima[20];
+	string temp1;
+	string temp2;
+	int existname = 0;//判断账号是否正确
+	int match = 0;//判断密码是否正确
+	cout << "				请输入账号：" << endl << endl;
+	cin >> zhanghao;
+	cout << "				请输入密码：" << endl << endl;
+	cin >> mima;
+	ifstream in("zhanghao.txt", ios::in);
+	while (std::getline(in,temp1))
+	{
+		std::getline(in, temp2);
+		if (strcmp(zhanghao, temp1.c_str()) == 0) {
+			existname = 1;
+			if (strcmp(mima, temp2.c_str()) == 0) {
+				match = 1;
+				break;}
+		}
+	}
+	in.close();
+	if (existname == 0) {
+		cout << "			没有此账号请注册！" << endl;
+		Registered();
+	}
+
+	else {
+		if (match == 1) cheng=1;//函数出去后用if判断cheng=1？goto跳出登录页面do-while 进入主页面。
+		else {
+			cout << "				密码错误！" << endl << endl;
+			Login();}
+	}
+
+}
+							//	注册功能
+void Registered() {
+	char zhanghao[20], mima[20];
+	int flag = 0;//判断账号是否被注册
+	int flag2 = 0;//判断yn数值是否正确
+	char flag1;//判断是否继续注册
+	int i = 0;//跳出双数行（密码）
+	string temp;
+
+	do {
+		cout << "				请输入你要注册的账号：" << endl;
+		cin >> zhanghao;
+		cout << "				请输入注册账号的密码：" << endl;
+		cin >> mima;
+		ifstream in;
+		ofstream out;
+		in.open("zhanghao.txt", ios::in);
+		out.open("zhanghao.txt", ios::app);
+		while (std::getline(in, temp))
+		{
+			i++;
+			if (i % 2 == 0) continue;
+			if (strcmp(zhanghao, temp.c_str()) == 0) flag = 1;
+		}
+		in.close();
+		if (flag == 1) {
+			cout << "			账号已被注册，请重新输入" << endl;
+			Registered();
+			flag = 0;
+		}
+		else {
+			out << zhanghao << endl;
+			out << mima << endl;
+			out.close();
+			cout << "				注册成功！,想要继续注册吗？ y / n :" << endl << endl << endl;
+			cin >> flag1;
+			cout << endl;
+			do {
+				if (flag1 != 'y'&&flag1 != 'n') {
+					cout << "  指令有误！请重新输入！" << endl << "   ";
+					char flag1;
+					cin >> flag1;
+				}
+				else flag2 = 1;
+			} while (flag2 == 0);
+		}
+
+	} while (flag1 == 'y');
+}
+
+										//	系统主界面
+void menu() {				
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*        <主页面>        *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.楼盘管理       *" << endl;
+			//小区资料（小区名称，楼宇总数等），房型资料（房型编号、房型、建筑面积等），
+	cout << "				*       2.住户管理       *" << endl;
+			/*住户资料（住户编号、住户姓名、联系电话、联系地址、预付金额、欠费金额等），
+			住户停车车位管理（车位编号，住户信息等），*/
+	cout << "				*       3.报修管理       *" << endl;
+	cout << "				*       4.投诉管理       *" << endl;
+	cout << "				*       5.收费管理       *" << endl;
+			/*住户物业收费管理（收费名称、收费金额、收费单位、收费周期等）
+			按照欠费金额进行排序，显示用户相关信息*/
+	cout << "				*       6.查询显示       *" << endl;
+			//查找住户的车位信息,查询住户的欠费状况
+	cout << "				*       7.返回上一页面   *" << endl;
+	cout << "				*       8.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-7)  *" << endl;
+	cout << "				**************************" << endl;
+
+	int p;		//指令数（1-7）判断
+	char w;		//do-while的控制变量
+	//int flag = 0;		//是否返回主页面 y / n 控制变量
+	int flag1 = 0;		// 是否继续当前操作 y / n控制变量
+	int i = 0;		//循环变量
+	int j = 0;		//循环变量
+
+	Tenants Ten[100];		//	创建名叫Ten的Tenant类
+	Tenants *t[100];		//	创建名叫t的Tenant类
+	Estate Est[100];		//	创建名叫Est的Estate类
+	Estate *e[100];			//	创建名叫e的Estate类
+/*
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+*/	
+	do{
+
+		int flag= 0;
+		do{
+			cin >> p;
+			if(p>=1 && p<= 8) 
+				flag = 1;
+			else cout<<"				指令(1-8)错误！重新输入："<<endl;						
+		}while(flag == 0);
+
+		switch(p){
+			case 1 :{
+					system("cls");
+					Menu_EstManage();		//	系统主界面_楼盘管理
+				break;}
+			case 2 :{
+					system("cls");
+					Menu_TenManage();		//	系统主界面_住户管理
+				break;}
+			case 3 :{
+					system("cls");
+					Menu_RepairManage();	//	系统主界面_报修管理
+				break;}
+			case 4 :{
+					system("cls");
+					Menu_ComplainManage();	//	系统主界面_投诉管理
+				break;}
+			case 5 :{
+					system("cls");
+					Menu_ChargeManage();	//	系统主界面_收费管理
+				break;}
+			case 6 :{
+					system("cls");
+					Menu_SeekManage();		//	系统主界面_查询显示	
+				break;}
+			case 7 :{
+					system("cls");
+					goto Fanhui;
+				break;}
+			case 8 :{
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+
+		cout<<"					请问你是否返回到主页面？ y / n :"<<endl<<endl;
+	
+		flag = 0;
+
+		do{
+			cin >> w;
+			cout<<endl;
+			if(w=='n'){
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);}
+			if(w != 'y'&& w != 'n') 
+				cout<<"				指令(y/ n)错误！请重新输入！"<<endl;
+			else flag=1;
+		}while(flag == 0);
+		if(w == 'y'){
+			system("cls");
+			cout << "				**************************" << endl;
+			cout << "				*欢迎使用小区物业管理系统*" << endl;
+			cout << "				*        <主页面>        *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*       1.楼盘管理       *" << endl;
+			cout << "				*       2.住户管理       *" << endl;
+			cout << "				*       3.报修管理       *" << endl;
+			cout << "				*       4.投诉管理       *" << endl;
+			cout << "				*       5.收费管理       *" << endl;
+			cout << "				*       6.查询显示       *" << endl;
+			cout << "				*       7.返回上一页面   *" << endl;
+			cout << "				*       8.退出系统       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*   请输入你的指令(1-7)  *" << endl;
+			cout << "				**************************" << endl;}
+	}while(w == 'y');
+Fanhui : MainLogin();
+}//menu函数后括号
+										//	系统主界面_楼盘管理
+void Menu_EstManage(){
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <楼盘管理>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.信息输入       *" << endl;
+	cout << "				*       2.信息修改       *" << endl;
+	cout << "				*       3.信息删除       *" << endl;
+	cout << "				*       4.信息浏览       *" << endl;
+	cout << "				*       5.计算功能       *" << endl;
+	cout << "				*       6.返回上一页面   *" << endl;
+	cout << "				*       7.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-6)  *" << endl;
+	cout << "				**************************" << endl;
+	int flag=0;//指令数（1-6）的判断变量
+	int k;//指令数（1-6）的变量
+	char w;//是否返回楼盘管理页面的判断变量
+
+	Estate Est[100];		//	创建名叫Est的Estate类
+	Estate *e[100];			//	创建名叫e的Estate类
+	
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+	
+	do{
+		do{
+			cin>>k;
+			if( k>=1 && k<=7)	flag=1;
+			else cout<<"		指令数（1-7）输入有误！请重新输入："<<endl<<endl;
+		}while(flag==0);
+		switch(k){
+			case 1:{	
+				char Ename[20];//小区名称
+				char Esum[20];//楼宇总数
+				char Eroom_num[20];//房型编号
+				char Eroom_shape[20];//房型
+				char Eroom_area[20];//建筑面积
+				char Tnum[20];//住户编号
+				char Tname[20];//住户姓名
+				char Tphone[20];//联系电话
+				char Tcar_num[20];//住户车位编号
+				char e;
+				out.open("Estate.txt",ios::app);
+
+				do{
+					cout<<"		请输入小区名称 :";
+					cin >> Ename;
+					cout<<endl<<"		请输入楼宇总数 :";
+					cin >> Esum;
+					cout<<endl<<"		请输入房型编号 :";
+					cin >> Eroom_num;
+					cout<<endl<<"		请输入房型 :";
+					cin >> Eroom_shape;
+					cout<<endl<<"		请输入建筑面积 :";
+					cin >> Eroom_area;
+					cout<<endl<<"		请输入住户编号 :";
+					cin >> Tnum;
+					cout<<endl<<"		请输入住户姓名 :";
+					cin >> Tname;
+					cout<<endl<<"		请输入联系电话 :";
+					cin >> Tphone;
+					cout<<endl<<"		请输入住户车位编号 :";
+					cin >> Tcar_num;
+					cout<<endl;
+
+					out << endl << setw(20) << Ename << setw(20) << Esum << setw(20) << Eroom_num << setw(10) << Eroom_shape << setw(10) << Eroom_area << setw(10) << Tnum << setw(20) << Tname << setw(20) << Tphone << setw(10) << Tcar_num;
+
+					cout << "			数据输入成功，想要继续输入吗？  y / n：" << endl << " ";
+					cin >> e;
+					cout << endl;
+					do {					
+						if (e != 'y'&&e != 'n'){
+							cout << "			指令有误！请重新输入！" << endl << "   ";
+							char e;
+							cin >> e;}
+						else flag = 1;
+						} while (flag == 0);	
+					}while( e == 'y');
+					out.close();
+			break;}
+			case 2:{cout<<"			楼盘管理选项测试语句！！！"<<endl;
+				break;}
+			case 3:{cout<<"			楼盘管理选项测试语句！！！"<<endl;
+				break;}
+			case 4:{cout<<"			楼盘管理选项测试语句！！！"<<endl;
+				break;}
+			case 5:{cout<<"			楼盘管理选项测试语句！！！"<<endl;
+				break;}
+			case 6:{	
+				system("cls");
+				l = 1 ;
+				goto loop;
+				break;}
+			case 7:{
+				cout << "			谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "			Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+		cout<<"			请问你要返回楼盘管理页面吗？ y / n :"<<endl<<endl;
+//		flag=0;
+		do{
+			cin>>w;
+			if(w == 'n') {
+				l = 2;
+				goto loop;}
+			if(w!='y'&&w!='n')cout<<"			你输入的指令（y / n）有误！请重新输入："<<endl<<endl;
+			else flag=0;
+		}while(flag==1);
+		if(w=='y'){
+			cout << "				**************************" << endl;
+			cout << "				*欢迎使用小区物业管理系统*" << endl;
+			cout << "				*       <楼盘管理>       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*       1.信息输入       *" << endl;
+			cout << "				*       2.信息修改       *" << endl;
+			cout << "				*       3.信息删除       *" << endl;
+			cout << "				*       4.信息浏览       *" << endl;
+			cout << "				*       5.计算功能       *" << endl;
+			cout << "				*       6.返回上一页面   *" << endl;
+			cout << "				*       7.退出系统       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*   请输入你的指令(1-6)  *" << endl;
+			cout << "				**************************" << endl;}
+	}while(w =='y' );
+
+	loop:if(l == 1 || l == 2 ){
+		if(l == 2) cout<<"			你已退出楼盘管理！"<<endl<<endl;
+		if(l == 1) {
+			system("cls");
+			menu();} }
+}//函数后括号
+										//	系统主界面_住户管理
+void Menu_TenManage(){
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <住户管理>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.信息输入       *" << endl;
+	cout << "				*       2.信息修改       *" << endl;
+	cout << "				*       3.信息删除       *" << endl;
+	cout << "				*       4.信息浏览       *" << endl;
+	cout << "				*       5.车位查询       *" << endl;
+	cout << "				*       6.返回上一页面   *" << endl;
+	cout << "				*       7.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-6)  *" << endl;
+	cout << "				**************************" << endl;
+
+	int flag=0;//指令数（1-7）的判断变量
+	int k;//指令数（1-7）的变量
+	char w;//是否返回住户管理页面的判断变量
+
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+
+	do{
+		do{
+			cin>>k;
+			if( k>=1 && k<=7)	flag=1;
+			else cout<<"		指令数（1-7）输入有误！请重新输入："<<endl<<endl;
+		}while(flag==0);
+		switch(k){
+			case 1:{
+				char Tnum[20];//住户编号
+				char Tname[20];//住户姓名
+				char Tphone[20];//联系电话
+				char Tcar_num[20];//住户车位编号
+				char Tyf_money[10];//预付金额
+				char Tqf_money[20];//欠费金额
+				char e;//y / n 变量
+				out.open("Tenants.txt",ios::app);
+
+				do{
+					cout<<"		请输入住户编号 :";
+					cin >> Tnum;
+					cout<<endl<<"		请输入住户姓名 :";
+					cin >> Tname;
+					cout<<endl<<"		请输入联系电话 :";
+					cin >> Tphone;
+					cout<<endl<<"		请输入住户车位编号 :";
+					cin >> Tcar_num;
+					cout<<endl<<"		请输入预付金额 :";
+					cin >> Tyf_money;
+					cout<<endl<<"		请输入欠费金额 :";
+					cin >> Tqf_money;
+					cout<<endl;
+
+					out <<  setw(10) << Tnum << setw(20) << Tname << setw(20) << Tphone << setw(10) << Tcar_num << setw(10) << Tyf_money << setw(10) << Tqf_money;
+
+					cout << "  数据输入成功，想要继续输入吗？  y / n：" << endl << " ";
+					cin >> e;
+					cout << endl;
+					do {					
+						if (e != 'y'&&e != 'n'){
+							cout << "  指令有误！请重新输入！" << endl << "   ";
+							char e;
+							cin >> e;}
+						else flag = 1;
+						} while (flag == 0);	
+					}while( e == 'y');
+					out.close();
+				break;}
+			case 2:{cout<<"			住户管理选项测试语句！！！"<<endl;
+				break;}
+			case 3:{cout<<"			住户管理选项测试语句！！！"<<endl;
+				break;}
+			case 4:{cout<<"			住户管理选项测试语句！！！"<<endl;
+				break;}
+			case 5:{cout<<"			住户管理选项测试语句！！！"<<endl;
+				break;}
+			case 6:{
+				l = 1;
+				goto loop;
+				break;}
+			case 7:{
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+		cout<<"				请问你要返回住户管理页面吗？ y / n :"<<endl<<endl;
+//		flag=0;
+		do{
+			cin>>w;
+			if(w == 'n') {
+				l = 2;
+				goto loop;}
+			if(w!='y'&&w!='n')cout<<"		你输入的指令（y / n）有误！请重新输入："<<endl<<endl;
+			else flag=0;
+		}while(flag==1);
+		if(w=='y'){
+			cout << "				**************************" << endl;
+			cout << "				*欢迎使用小区物业管理系统*" << endl;
+			cout << "				*       <住户管理>       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*       1.信息输入       *" << endl;
+			cout << "				*       2.信息修改       *" << endl;
+			cout << "				*       3.信息删除       *" << endl;
+			cout << "				*       4.信息浏览       *" << endl;
+			cout << "				*       5.车位查询       *" << endl;
+			cout << "				*       6.退出系统       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*   请输入你的指令(1-6)  *" << endl;
+			cout << "				**************************" << endl;}
+	}while(w =='y' );
+	loop:if(l == 1 || l == 2 ){
+		if(l == 2) cout<<"		你已退出投诉管理！"<<endl<<endl;
+		if(l == 1) {
+		system("cls");
+		menu();} }	
+}
+										//	系统主界面_报修管理
+void Menu_RepairManage(){
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <报修管理>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.信息输入       *" << endl;
+	cout << "				*       2.信息修改       *" << endl;
+	cout << "				*       3.信息删除       *" << endl;
+	cout << "				*       4.信息浏览       *" << endl;
+	cout << "				*       5.返回上一页面   *" << endl;
+	cout << "				*       6.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-6)  *" << endl;
+	cout << "				**************************" << endl;
+
+	int flag=0;//指令数（1-5）的判断变量
+	int k;//指令数（1-5）的变量
+	char w;//是否返回住户管理页面的判断变量
+
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+
+	do{
+		do{
+			cin>>k;
+			if( k>=1 && k<=6)	flag=1;
+			else cout<<"		指令数（1-6）输入有误！请重新输入："<<endl<<endl;
+		}while(flag==0);
+		switch(k){
+			case 1:{
+				char Tnum[20];//住户编号
+				char Tname[20];//住户姓名
+				char Tphone[20];//联系电话
+				char Tcar_num[20];//住户车位编号
+				char Repair_time[10];//报修时间
+				char Repair_content[20];//报修内容
+				char Repair_state[20];//报修处理状态
+				char e;//y / n 变量
+				out.open("RepairManage.txt",ios::app);
+
+				do{
+					cout<<"		请输入住户编号 :";
+					cin >> Tnum;
+					cout<<endl<<"		请输入住户姓名 :";
+					cin >> Tname;
+					cout<<endl<<"		请输入联系电话 :";
+					cin >> Tphone;
+					cout<<endl<<"		请输入住户车位编号 :";
+					cin >> Tcar_num;
+					cout<<endl<<"		请输入报修时间 :";
+					cin >> Repair_time;
+					cout<<endl<<"		请输入报修内容 :";
+					cin >> Repair_content;
+					cout<<endl<<"		请输入报修处理状态 :";
+					cin >> Repair_state;
+					cout<<endl;
+
+					out <<  setw(10) << Tnum << setw(20) << Tname << setw(20) << Tphone << setw(10) << Tcar_num << setw(10) << Repair_time << setw(10) << Repair_content<< setw(10) << Repair_state;
+
+					cout << "  数据输入成功，想要继续输入吗？  y / n：" << endl << " ";
+					cin >> e;
+					cout << endl;
+					do {					
+						if (e != 'y'&&e != 'n'){
+							cout << "  指令有误！请重新输入！" << endl << "   ";
+							char e;
+							cin >> e;}
+						else flag = 1;
+						} while (flag == 0);	
+					}while( e == 'y');
+					out.close();
+				break;}
+			case 2:{cout<<"			报修管理选项测试语句！！！"<<endl;
+				break;}
+			case 3:{cout<<"			报修管理选项测试语句！！！"<<endl;
+				break;}
+			case 4:{cout<<"			报修管理选项测试语句！！！"<<endl;
+				break;}
+			case 5:{
+				l = 1;
+				goto loop;
+				break;}
+			case 6:{
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+		cout<<"				请问你要返回报修管理页面吗？ y / n :"<<endl<<endl;
+//		flag=0;
+		do{
+			cin>>w;
+			if(w == 'n') {
+				l = 2;
+				goto loop;}
+			if(w!='y'&&w!='n')cout<<"		你输入的指令（y / n）有误！请重新输入："<<endl<<endl;
+			else flag=0;
+		}while(flag==1);
+		if(w=='y'){
+		cout << "				**************************" << endl;
+		cout << "				*欢迎使用小区物业管理系统*" << endl;
+		cout << "				*       <报修管理>       *" << endl;
+		cout << "				**************************" << endl;
+		cout << "				**************************" << endl;
+		cout << "				*       1.信息输入       *" << endl;
+		cout << "				*       2.信息修改       *" << endl;
+		cout << "				*       3.信息删除       *" << endl;
+		cout << "				*       4.信息浏览       *" << endl;
+		cout << "				*       5.退出系统       *" << endl;
+		cout << "				**************************" << endl;
+		cout << "				**************************" << endl;
+		cout << "				*   请输入你的指令(1-5)  *" << endl;
+		cout << "				**************************" << endl;}
+	}while(w =='y' );
+	loop:if(l == 1 || l == 2 ){
+		if(l == 2) cout<<"		你已退出投诉管理！"<<endl<<endl;
+		if(l == 1) {
+		system("cls");
+		menu();} }
+}
+										//	系统主界面_投诉管理
+void Menu_ComplainManage(){
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <投诉管理>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.信息输入       *" << endl;
+	cout << "				*       2.信息修改       *" << endl;
+	cout << "				*       3.信息删除       *" << endl;
+	cout << "				*       4.信息浏览       *" << endl;
+	cout << "				*       5.返回上一页面   *" << endl;
+	cout << "				*       6.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-5)  *" << endl;
+	cout << "				**************************" << endl;
+
+	int flag=0;//指令数（1-6）的判断变量
+	int k;//指令数（1-6）的变量
+	char w;//是否返回住户管理页面的判断变量
+
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+
+	do{
+		do{
+			cin>>k;
+			if( k>=1 && k<=6)	flag=1;
+			else cout<<"		指令数（1-6）输入有误！请重新输入："<<endl<<endl;
+		}while(flag==0);
+		switch(k){
+			case 1:{
+				char Tnum[20];//住户编号
+				char Tname[20];//住户姓名
+				char Tphone[20];//联系电话
+				char Tcar_num[20];//住户车位编号
+				char Complain_time[10];//报修时间
+				char Complain_content[20];//报修内容
+				char Complain_state[20];//报修处理状态
+				char e;//y / n 变量
+				out.open("ComplainManage.txt",ios::app);
+
+				do{
+					cout<<"		请输入住户编号 :";
+					cin >> Tnum;
+					cout<<endl<<"		请输入住户姓名 :";
+					cin >> Tname;
+					cout<<endl<<"		请输入联系电话 :";
+					cin >> Tphone;
+					cout<<endl<<"		请输入住户车位编号 :";
+					cin >> Tcar_num;
+					cout<<endl<<"		请输入投诉时间 :";
+					cin >> Complain_time;
+					cout<<endl<<"		请输入投诉内容 :";
+					cin >> Complain_content;
+					cout<<endl<<"		请输入投诉处理状态 :";
+					cin >> Complain_state;
+					cout<<endl;
+
+					out <<  setw(10) << Tnum << setw(20) << Tname << setw(20) << Tphone << setw(10) << Tcar_num << setw(10) << Complain_time << setw(10) << Complain_content<< setw(10) << Complain_state;
+
+					cout << "  数据输入成功，想要继续输入吗？  y / n：" << endl << " ";
+					cin >> e;
+					cout << endl;
+					do {					
+						if (e != 'y'&&e != 'n'){
+							cout << "  指令有误！请重新输入！" << endl << "   ";
+							char e;
+							cin >> e;}
+						else flag = 1;
+						} while (flag == 0);	
+					}while( e == 'y');
+					out.close();
+				break;}
+			case 2:{cout<<"			投诉管理选项测试语句！！！"<<endl;
+				break;}
+			case 3:{cout<<"			投诉管理选项测试语句！！！"<<endl;
+				break;}
+			case 4:{cout<<"			投诉管理选项测试语句！！！"<<endl;
+				break;}
+			case 5:{
+				l = 1;
+				goto loop;
+				break;}
+			case 6:{
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+		cout<<"				请问你要返回投诉管理页面吗？ y / n :"<<endl<<endl;
+//		flag=0;
+		do{
+			cin>>w;
+			if(w == 'n') {
+				l =2;
+				goto loop;}
+			if(w!='y'&&w!='n')cout<<"		你输入的指令（y / n）有误！请重新输入："<<endl<<endl;
+			else flag=0;
+		}while(flag==1);
+		if(w=='y'){
+		cout << "				**************************" << endl;
+		cout << "				*欢迎使用小区物业管理系统*" << endl;
+		cout << "				*       <投诉管理>       *" << endl;
+		cout << "				**************************" << endl;
+		cout << "				**************************" << endl;
+		cout << "				*       1.信息输入       *" << endl;
+		cout << "				*       2.信息修改       *" << endl;
+		cout << "				*       3.信息删除       *" << endl;
+		cout << "				*       4.信息浏览       *" << endl;
+		cout << "				*       5.返回上一页面   *" << endl;
+		cout << "				*       6.退出系统       *" << endl;
+		cout << "				**************************" << endl;
+		cout << "				**************************" << endl;
+		cout << "				*   请输入你的指令(1-5)  *" << endl;
+		cout << "				**************************" << endl;}
+	}while(w =='y' );
+	loop:if(l == 1 || l == 2 ){
+		if(l == 2) cout<<"		你已退出投诉管理！"<<endl<<endl;
+		if(l == 1) {
+		system("cls");
+		menu();} }
+}//函数后括号
+										//	系统主界面_收费管理
+void Menu_ChargeManage(){
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <收费管理>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.信息输入       *" << endl;
+	cout << "				*       2.信息修改       *" << endl;
+	cout << "				*       3.信息删除       *" << endl;
+	cout << "				*       4.信息浏览       *" << endl;
+	cout << "				*       5.欠费查询       *" << endl;
+	cout << "				*       6.返回上一页面   *" << endl;
+	cout << "				*       7.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-7)  *" << endl;
+	cout << "				**************************" << endl;
+
+	int flag=0;//指令数（1-7）的判断变量
+	int k;//指令数（1-7）的变量
+	char w;//是否返回住户管理页面的判断变量
+
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+
+	do{
+		do{
+			cin>>k;
+			if( k>=1 && k<=7)	flag=1;
+			else cout<<"		指令数（1-7）输入有误！请重新输入："<<endl<<endl;
+		}while(flag==0);
+		switch(k){
+			case 1:{cout<<"			收费管理选项测试语句！！！"<<endl;
+				break;}
+			case 2:{cout<<"			收费管理选项测试语句！！！"<<endl;
+				break;}
+			case 3:{cout<<"			收费管理选项测试语句！！！"<<endl;
+				break;}
+			case 4:{cout<<"			收费管理选项测试语句！！！"<<endl;
+				break;}
+			case 5:{cout<<"			收费管理选项测试语句！！！"<<endl;
+				break;}
+			case 6:{
+				l = 1;
+				goto loop;
+				break;}
+			case 7:{
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+		cout<<"				请问你要返回收费管理页面吗？ y / n :"<<endl<<endl;
+//		flag=0;
+		do{
+			cin>>w;
+			if(w == 'n') {
+				l=2;
+				goto loop;}
+			if(w!='y'&&w!='n')cout<<"		你输入的指令（y / n）有误！请重新输入："<<endl<<endl;
+			else flag=0;
+		}while(flag==1);
+		if(w=='y'){
+			system("cls");
+			cout << "				**************************" << endl;
+			cout << "				*欢迎使用小区物业管理系统*" << endl;
+			cout << "				*       <收费管理>       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*       1.信息输入       *" << endl;
+			cout << "				*       2.信息修改       *" << endl;
+			cout << "				*       3.信息删除       *" << endl;
+			cout << "				*       4.信息浏览       *" << endl;
+			cout << "				*       5.欠费查询       *" << endl;
+			cout << "				*       6.退出系统       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*   请输入你的指令(1-6)  *" << endl;
+			cout << "				**************************" << endl;}
+	}while(w =='y' );
+loop:if(l == 1 || l == 2 ){
+		if(l == 2) cout<<"		你已退出收费管理！"<<endl<<endl;
+		if(l == 1) {
+			system("cls");
+			menu();} }
+}
+										//	系统主界面_查询显示
+void Menu_SeekManage(){
+	cout << "				**************************" << endl;
+	cout << "				*欢迎使用小区物业管理系统*" << endl;
+	cout << "				*       <查询显示>       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*       1.车位查询       *" << endl;
+	cout << "				*       2.欠费查询       *" << endl;
+	cout << "				*       3.返回上一页面   *" << endl;
+	cout << "				*       4.退出系统       *" << endl;
+	cout << "				**************************" << endl;
+	cout << "				**************************" << endl;
+	cout << "				*   请输入你的指令(1-4)  *" << endl;
+	cout << "				**************************" << endl;
+	
+	int flag=0;//指令数（1-4）的判断变量
+	int k;//指令数（1-4）的变量
+	char w;//是否返回住户管理页面的判断变量
+
+	ifstream in;
+	ofstream out;
+	fstream f;		//输入输出对象
+
+	do{
+		do{
+			cin>>k;
+			if( k>=1 && k<=4)	flag=1;
+			else cout<<"		指令数（1-4）输入有误！请重新输入："<<endl<<endl;
+		}while(flag==0);
+		switch(k){
+			case 1:{cout<<"			查询显示选项测试语句！！！"<<endl;
+				break;}
+			case 2:{cout<<"			查询显示选项测试语句！！！"<<endl;
+				break;}
+			case 3:{
+				l = 1;
+				goto loop;
+				   break;}
+			case 4:{
+				cout << "				谢谢使用，小区物业管理系统！" << endl << endl;
+				cout << "				Bye-bye!   See you next time!" << endl << endl;
+				exit(0);
+				break;}
+		}//switch后括号
+		cout<<"				请问你要返回查询显示页面吗？ y / n :"<<endl<<endl;
+//		flag=0;
+		do{
+			cin>>w;
+			if(w == 'n') {
+				l = 2;
+				goto loop;}
+			if(w!='y'&&w!='n')cout<<"		你输入的指令（y / n）有误！请重新输入："<<endl<<endl;
+			else flag=0;
+		}while(flag==1);
+		if(w=='y'){
+			
+			system("cls");
+
+			cout << "				**************************" << endl;
+			cout << "				*欢迎使用小区物业管理系统*" << endl;
+			cout << "				*       <查询显示>       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*       1.车位查询       *" << endl;
+			cout << "				*       2.欠费查询       *" << endl;
+			cout << "				*       3.返回上一页面   *" << endl;
+			cout << "				*       4.退出系统       *" << endl;
+			cout << "				**************************" << endl;
+			cout << "				**************************" << endl;
+			cout << "				*   请输入你的指令(1-3)  *" << endl;
+			cout << "				**************************" << endl;}
+	}while(w =='y' );
+
+loop:if(l == 1 || l == 2 ){
+		if(l == 2) cout<<"		你已退出查询显示！"<<endl<<endl;
+		if(l == 1) {
+			system("cls");
+			menu();} }
+}
+
+							//	主函数
+int main( ) 
+{
+	MainLogin();
+	return 0;
+}
+
